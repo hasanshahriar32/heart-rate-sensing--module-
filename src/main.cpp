@@ -23,8 +23,8 @@
 
 // ========================= CONFIGURATION =========================
 // WiFi credentials
-const char* ssid = "One Sky";
-const char* password = "AgeOfUltron";
+const char* ssid = "realme 9i";
+const char* password = "gragra12345";
 
 // Pulse sensor configuration
 const int pulsePin = A0;           // Analog pin for pulse sensor
@@ -355,23 +355,18 @@ String getHTML() {
             .then(([bpm, signal, status]) => {
                 const bpmValue = parseInt(bpm);
                 const signalValue = parseInt(signal);
-                
+                const statusElement = document.getElementById('status');
                 // Update BPM display
                 document.getElementById('bpmValue').textContent = bpmValue > 0 ? bpmValue : '--';
-                
-                // Update signal strength
                 document.getElementById('signalStrength').textContent = signalValue;
-                
-                // Update status
-                const statusElement = document.getElementById('status');
-                if (bpmValue > 0) {
-                    statusElement.textContent = 'Pulse detected ✓';
+                // Show 'Detecting pulse...' only when beat detected, else 'No beat found'
+                if (status === 'connected') {
+                    statusElement.textContent = 'Detecting pulse...';
                     statusElement.className = 'status connected';
                 } else {
-                    statusElement.textContent = 'Detecting pulse...';
-                    statusElement.className = 'status detecting';
+                    statusElement.textContent = 'No beat found';
+                    statusElement.className = 'status error';
                 }
-                
                 // Animate heart on beat change
                 if (bpmValue !== lastBPM && bpmValue > 0) {
                     const heart = document.getElementById('heartIcon');
@@ -380,7 +375,6 @@ String getHTML() {
                         heart.style.animation = 'heartbeat 1.2s ease-in-out infinite';
                     }, 10);
                 }
-                
                 lastBPM = bpmValue;
                 isConnected = true;
                 updateTime();
