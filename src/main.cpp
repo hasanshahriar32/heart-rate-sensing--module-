@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include "telegram_notify.h"
+#include "mqtt_publish.h"
 
 /*
  * ESP8266 Heart Rate Monitor
@@ -492,6 +493,8 @@ void setup() {
     bool sent = sendTelegramNotification(ipMsg);
     Serial.print("Telegram notification sent: ");
     Serial.println(sent ? "YES" : "NO");
+
+    mqttSetup(); // Initialize MQTT after WiFi connects
   } else {
     Serial.println("\n✗ WiFi connection failed!");
     Serial.println("Please check your credentials and try again.");
@@ -541,7 +544,10 @@ void loop() {
       beatDetected = false; // Reset flag
     }
   }
-  
+
+  // Publish to MQTT every second
+  mqttLoopAndPublish();
+
   // Small delay to prevent overwhelming the system
   delay(10);
 }
