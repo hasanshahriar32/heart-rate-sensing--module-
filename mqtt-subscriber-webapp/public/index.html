@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart Rate MQTT Subscriber</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7fb; margin: 0; padding: 0; }
+    .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; text-align: center; }
+    h1 { color: #764ba2; }
+    .bpm { font-size: 3em; color: #e74c3c; margin: 16px 0; }
+    .signal { font-size: 1.5em; color: #3498db; margin: 8px 0; }
+    .status { margin: 12px 0; color: #888; }
+    .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #27ae60; margin-right: 8px; }
+    .dot.offline { background: #e74c3c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>❤️ Heart Rate Monitor</h1>
+    <div class="status"><span class="dot" id="mqttStatus"></span>MQTT Connection</div>
+    <div class="bpm" id="bpm">--</div>
+    <div class="signal" id="signal">Signal: --</div>
+    <div class="status" id="lastUpdate">Waiting for data...</div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const bpmEl = document.getElementById('bpm');
+    const signalEl = document.getElementById('signal');
+    const lastUpdateEl = document.getElementById('lastUpdate');
+    const mqttStatusEl = document.getElementById('mqttStatus');
+
+    let lastDataTime = null;
+
+    socket.on('connect', () => {
+      mqttStatusEl.classList.remove('offline');
+    });
+    socket.on('disconnect', () => {
+      mqttStatusEl.classList.add('offline');
+    });
+
+    socket.on('mqtt-data', data => {
+      bpmEl.textContent = data.bpm || '--';
+      signalEl.textContent = 'Signal: ' + (data.signal !== undefined ? data.signal : '--');
+      lastDataTime = new Date();
+      lastUpdateEl.textContent = 'Last update: ' + lastDataTime.toLocaleTimeString();
+    });
+
+    setInterval(() => {
+      if (lastDataTime) {
+        const now = new Date();
+        const diff = (now - lastDataTime) / 1000;
+        if (diff > 5) {
+          lastUpdateEl.textContent = 'No data received for ' + Math.floor(diff) + 's';
+        }
+      }
+    }, 2000);
+  </script>
+</body>
+</html>
