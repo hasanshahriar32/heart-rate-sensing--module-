@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include "telegram_notify.h"
 
 /*
  * ESP8266 Heart Rate Monitor
@@ -484,6 +485,13 @@ void setup() {
     Serial.println(WiFi.subnetMask());
     Serial.print("Gateway: ");
     Serial.println(WiFi.gatewayIP());
+
+    // Send IP address to Telegram
+    delay(2000); // Wait 2 seconds to ensure network is ready
+    String ipMsg = "ESP8266 connected! IP: " + WiFi.localIP().toString();
+    bool sent = sendTelegramNotification(ipMsg);
+    Serial.print("Telegram notification sent: ");
+    Serial.println(sent ? "YES" : "NO");
   } else {
     Serial.println("\n✗ WiFi connection failed!");
     Serial.println("Please check your credentials and try again.");
