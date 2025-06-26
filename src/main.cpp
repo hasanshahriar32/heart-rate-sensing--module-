@@ -487,9 +487,11 @@ void setup() {
     Serial.print("Gateway: ");
     Serial.println(WiFi.gatewayIP());
 
-    // Send IP address to Telegram
+    // Send IP address and live link to Telegram
     delay(2000); // Wait 2 seconds to ensure network is ready
-    String ipMsg = "ESP8266 connected! IP: " + WiFi.localIP().toString();
+    String ipMsg = "ESP8266 connected! IP: " + WiFi.localIP().toString() + "\n";
+    ipMsg += "Local: http://" + WiFi.localIP().toString() + "\n";
+    ipMsg += "Live: https://heart-rates.onrender.com";
     bool sent = sendTelegramNotification(ipMsg);
     Serial.print("Telegram notification sent: ");
     Serial.println(sent ? "YES" : "NO");
