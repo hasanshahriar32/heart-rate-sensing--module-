@@ -7,7 +7,7 @@
 
 // === Fill in your Telegram Bot Token and User ID ===
 #define TELEGRAM_BOT_TOKEN "5623049233:AAFX7zAZjHrsRYhAzcLiKLZ3dVWQiJHdnC8"
-#define TELEGRAM_USER_ID "1191587070"
+#define TELEGRAM_USER_ID "-1002769415296"
 
 /**
  * URL-encode a string for safe HTTP transmission
