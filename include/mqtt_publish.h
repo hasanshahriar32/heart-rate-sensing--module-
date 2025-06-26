@@ -3,24 +3,27 @@
 
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
 
-// HiveMQ public broker details
-const char* mqtt_server = "broker.hivemq.com";
-const int mqtt_port = 1883;
+// HiveMQ Cloud broker details (update username/password below)
+const char* mqtt_server = "38f07a1ee3754972a26af0f040402fde.s1.eu.hivemq.cloud";
+const int mqtt_port = 8883;
 const char* mqtt_topic = "mrhasan/heart"; // Unique topic for your project
+const char *mqtt_username = "Paradox";    // <-- Set your HiveMQ Cloud username
+const char *mqtt_password = "Paradox1";    // <-- Set your HiveMQ Cloud password
 
 extern int heartRate;
 extern int signalValue;
 
-WiFiClient espMqttClient;
+WiFiClientSecure espMqttClient;
 PubSubClient mqttClient(espMqttClient);
 
 void mqttReconnect() {
   while (!mqttClient.connected()) {
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
-    if (mqttClient.connect(clientId.c_str())) {
-      Serial.println("[MQTT] Connected to HiveMQ");
+    if (mqttClient.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
+      Serial.println("[MQTT] Connected to HiveMQ Cloud");
     } else {
       Serial.print("[MQTT] Failed, rc=");
       Serial.print(mqttClient.state());
@@ -31,6 +34,7 @@ void mqttReconnect() {
 }
 
 void mqttSetup() {
+  espMqttClient.setInsecure(); // For testing only. For production, use a proper root CA cert.
   mqttClient.setServer(mqtt_server, mqtt_port);
 }
 
