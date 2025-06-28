@@ -51,8 +51,8 @@ void mqttLoopAndPublish() {
     char timestamp[32];
     snprintf(timestamp, sizeof(timestamp), "2025-01-28T10:43:51.123Z"); // TODO: Replace with real time if available
     snprintf(payload, sizeof(payload),
-      "{\"userId\":\"PkH1UNenKZbwNlkyemyrMMVSYf93\",\"dataType\":\"heartRate\",\"bpm\":%d,\"signal\":%d,\"timestamp\":\"%s\",\"deviceId\":\"ESP8266_001\"}",
-      heartRate, signalValue, timestamp);
+             "{\"userId\":\"UubnKXcri1O48Gqa6vwvj3U1gPH2\",\"dataType\":\"heartRate\",\"bpm\":%d,\"signal\":%d,\"timestamp\":\"%s\",\"deviceId\":\"ESP8266_001\"}",
+             heartRate, signalValue, timestamp);
     mqttClient.publish(mqtt_topic, payload);
     Serial.print("[MQTT] Published: ");
     Serial.println(payload);
